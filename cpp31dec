@@ -1,0 +1,36 @@
+class Solution {
+public:
+    int isPossible(int N, int coins[]) {
+        // Calculate the sum of coins
+        int total_sum = 0;
+        for (int i = 0; i < N; ++i) {
+            total_sum += coins[i];
+        }
+
+        // Initialize a 2D DP array
+        vector<vector<bool>> dp(N + 1, vector<bool>(total_sum + 1, false));
+
+        // Base case: It's always possible to achieve a sum of 0
+        for (int i = 0; i <= N; ++i) {
+            dp[i][0] = true;
+        }
+
+        // Fill in the DP array
+        for (int i = 1; i <= N; ++i) {
+            for (int j = 1; j <= total_sum; ++j) {
+                dp[i][j] = dp[i - 1][j] || (j >= coins[i - 1] && dp[i - 1][j - coins[i - 1]]);
+            }
+        }
+
+        // Check for a sum that satisfies the merchandise eligibility criteria
+        for (int j = 1; j <= total_sum; ++j) {
+            if (j % 20 == 0 || j % 24 == 0 || j == 2024) {
+                if (dp[N][j]) {
+                    return 1;  // Return 1 if it's possible
+                }
+            }
+        }
+
+        return 0;  // Return 0 if not possible
+    }
+};
